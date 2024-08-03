@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Product</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"/>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="page-header">
+        <a href="#"><img src="Images/1126-14.jpg" class="logo" alt=""></a>
+    </div>
+    <header>
+        <section id="newsletter" class="section-p1 section-m1">
+            <div class="search-container">
+                <h8>Update Product</h8>
+            </div>
+        </section>
+    </header>
+
+    <section class="form-section">
+        <form th:action="@{/saveItems}" method="POST" th:object="${dailyProducts}">
+            <input type="hidden" th:field="*{id}"/>
+            <table>
+                <tr>
+                    <td>Item Code:</td>
+                    <td><input type="text" th:field="*{itemCode}" readonly></td>
+                </tr>
+                <tr>
+                    <td>Item Name:</td>
+                    <td><input type="text" th:field="*{itemName}" readonly></td>
+                </tr>
+                <tr>
+                    <td>Unit Price:</td>
+                    <td><input type="number" th:field="*{unitPrice}" readonly></td>
+                </tr>
+                <tr>
+                    <td>Quantity:</td>
+                    <td><input type="number" th:field="*{qty}" id="qty" oninput="calculateTotalPrice()"></td>
+                </tr>
+                <tr>
+                    <td>Total Price:</td>
+                    <td><input type="number" th:field="*{totalPrice}" id="totalPrice" step="0.01" readonly></td>
+                </tr>
+            </table>
+            <br>
+            <div class="button-container">
+                <button class="outside-button" type="submit">Update</button>
+            </div>
+        </form>
+    </section>
+
+    <footer class="section-p1">
+        <p class="text-center">Copyright © 2024 WINIT, All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        function calculateTotalPrice() {
+            var qty = document.getElementById("qty").value;
+            var totalPrice = qty * 10;
+            document.getElementById("totalPrice").value = totalPrice.toFixed(2); // Set the value with 2 decimal places
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Order</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"/>
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .table th, .table td {
+            text-align: center; /* Center align table headers and data */
+        }
+    </style>
+</head>
+<body>
+	 <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="/Images/1126-14.jpg" width="40" height="40" class="d-inline-block align-top" alt="Logo">
+        </a>
+    </nav>
+
+	
+<div class="container">
+	<h2 class="text-center">Edit Order</h2> <!-- Centered heading -->
+    <form th:action="@{/orders/editOrder}" th:object="${order}" method="post">
+        <input type="hidden" th:field="*{id}" /> <!-- Order ID -->
+
+        <!-- Username -->
+        <div class="form-group">
+            <label for="username">Username:<input type="text" class="form-control" id="username" th:field="*{username}" readonly></label>
+        </div>
+
+        <!-- Order Items -->
+        <div class="form-group">
+			<h4 class="text-center">Order Items</h4> <!-- Centered heading -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Item Code</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item, iterStat : *{orderItems}">
+                        <!-- Item Code (hidden input) -->
+                        <td>
+                            <input type="hidden" th:field="*{orderItems[__${iterStat.index}__].id}" />
+                            <input type="hidden" th:field="*{orderItems[__${iterStat.index}__].itemCode}" />
+                            <span th:text="${item.itemCode}"></span>
+                        </td>
+
+                       <!-- Description -->
+
+                      <td>
+                            <input type="text"  th:field="*{orderItems[__${iterStat.index}__].description}" />
+                        </td>
+
+                        <!-- Quantity -->
+                        <td>
+                            <input type="number"  th:field="*{orderItems[__${iterStat.index}__].quantity}">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Save Button -->
+ <div class="container mt-4">
+    <div class="row">
+        <div class="col text-right">
+        <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+</div> 
+    </form>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

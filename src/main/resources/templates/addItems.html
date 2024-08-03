@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WINIT Add Order</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"/>
+    <link rel="stylesheet" href="style.css">
+     <style>
+        .table th, .table td {
+            text-align: center; /* Center align table headers and data */
+        }
+    </style>
+</head>
+<body>
+	
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="/Images/1126-14.jpg" width="40" height="40" class="d-inline-block align-top" alt="Logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>    
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto"> <!-- Use ms-auto if you are using Bootstrap 5 -->
+                <li class="nav-item">
+                    <a class="btn btn-primary" href="/orders/list" role="button">
+                        Order List
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+   <div class="container text-center mt-5">
+        <h5>Sales Order</h5>
+        <div class="d-inline-block">
+            <select class="form-select form-select-sm mb-3" aria-label="Small select example" id="usernameSelect" onchange="updateUsername()">
+                <option selected disabled>Open this select User Name</option>
+                <option value="Raju">Raju</option>
+                <option value="Netish">Netish</option>
+                <option value="Ramesh">Ramesh</option>
+               <!-- static users -->
+            </select>
+        </div>
+        <div class="d-inline-block">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                Select Products
+            </button>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Products List</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Item Code</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Select</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Use Thymeleaf to iterate over products and display each row -->
+                        <tr th:each="product : ${products}">
+                            <td th:text="${product.itemCode}"></td>
+                            <td th:text="${product.description}"></td>
+                            <td>
+                                <input type="checkbox" th:attr="data-itemCode=${product.itemCode}, data-description=${product.description}" onclick="selectProduct(this)">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveChanges()">Save changes</button>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="selectedUsername" style="margin-top: 20px; font-weight: bold;"></div>
+ 
+ 
+    <table class="table" id="selectedItemsTable">
+        <thead>
+        <tr>
+            <th scope="col">Item Code</th>
+            <th scope="col">Item Name</th>
+            <th scope="col">Unit Price</th>
+            <th scope="col">QTY</th>
+            <th scope="col">Total Price</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Dynamic rows will be added here -->
+        </tbody>
+    </table>
+ </div>    
+      
+      
+      <div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Total SKUs</h6>
+                    <p class="card-text" id="totalSKUs">0</p>
+                </div>
+        </div>
+        <div class="col-md-4">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Total Quantity</h6>
+                    <p class="card-text" id="totalQuantity">0</p>
+                </div>
+        </div>
+        <div class="col-md-4">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Total Amount</h6>
+                    <p class="card-text" id="totalAmount">$0</p>
+                </div>
+        </div>
+    </div>
+</div>
+
+    
+  
+     <!-- New button for sending order -->
+<div class="container mt-4">
+    <div class="row">
+        <div class="col text-right">
+            <button type="button" class="btn btn-success" onclick="sendOrder()">Order Now</button>
+        </div>
+    </div>
+</div>    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- JavaScript function to handle selections and table updates -->
+   <!-- JavaScript function to handle selections and table updates -->
+<script>
+    var selectedProducts = [];
+    var selectedUsername = '';
+    const unitPrice = 10;
+    
+    function selectProduct(checkbox) {
+        var itemCode = checkbox.getAttribute('data-itemCode');
+        var description = checkbox.getAttribute('data-description');
+        if (checkbox.checked) {
+            selectedProducts.push({ itemCode: itemCode, description: description, qty: 1 });
+        } else {
+            selectedProducts = selectedProducts.filter(function (product) {
+                return product.itemCode !== itemCode;
+            });
+        }
+    }
+    
+    function updateUsername() {
+        var select = document.getElementById('usernameSelect');
+        selectedUsername = select.options[select.selectedIndex].value;
+    }
+    
+    function saveChanges() {
+        var tbody = document.getElementById('selectedItemsTable').getElementsByTagName('tbody')[0];
+        var selectedUsernameDiv = document.getElementById('selectedUsername');
+        var totalSKUs = document.getElementById('totalSKUs');
+        var totalQuantity = document.getElementById('totalQuantity');
+        var totalAmount = document.getElementById('totalAmount');
+        selectedUsernameDiv.innerHTML = 'Username: ' + selectedUsername;
+        tbody.innerHTML = '';
+        var totalQty = 0;
+        var totalPrice = 0;
+        selectedProducts.forEach(function (product, index) {
+            var row = tbody.insertRow();
+            row.innerHTML = `
+                <td>${product.itemCode}</td>
+                <td>${product.description}</td>
+                <td>$${unitPrice}</td>
+                <td><input type="number" class="form-control" value="${product.qty}" min="1" onchange="updateTotalPrice(this, ${index})"></td>
+                <td class="total-price" data-index="${index}">$${unitPrice * product.qty}</td>
+                <td><button class="btn btn-primary" onclick="removeProduct(${index})"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 9.5a.5.5 0 1 1-1 0V6a.5.5 0 1 1 1 0v3.5Z"/>
+                    </svg></button></td>`;
+            totalQty += product.qty;
+            totalPrice += unitPrice * product.qty;
+        });
+        totalSKUs.textContent = selectedProducts.length;
+        totalQuantity.textContent = totalQty;
+        totalAmount.textContent = '$' + totalPrice;
+
+        // Close the modal
+        $('#exampleModal').modal('hide');
+    }
+    
+    function updateTotalPrice(input, index) {
+        var qty = parseInt(input.value);
+        if (isNaN(qty) || qty < 1) {
+            qty = 1;
+            input.value = qty;
+        }
+        selectedProducts[index].qty = qty;
+        var totalPriceCell = document.querySelector(`.total-price[data-index="${index}"]`);
+        totalPriceCell.textContent = '$' + (unitPrice * qty);
+        calculateTotals();
+    }
+    
+    function removeProduct(index) {
+        selectedProducts.splice(index, 1);
+        saveChanges();
+    }
+    
+    function calculateTotals() {
+        var totalQty = 0;
+        var totalPrice = 0;
+        selectedProducts.forEach(function (product) {
+            totalQty += product.qty;
+            totalPrice += unitPrice * product.qty;
+        });
+        document.getElementById('totalQuantity').textContent = totalQty;
+        document.getElementById('totalAmount').textContent = '$' + totalPrice;
+    }
+    
+    function sendOrder() {
+        if (selectedProducts.length === 0) {
+            alert('Please add products before sending the order.');
+            return;
+        }
+        sendOrderToServer();
+    }
+    
+    function sendOrderToServer() {
+    // Implement sending selectedProducts to the server here
+    console.log('Sending order to server:', selectedProducts);
+    // Example AJAX request (you can adjust this based on your backend API)
+    $.ajax({
+        type: "POST",
+        url: "/orders/submitOrder",  // Ensure correct endpoint URL
+        contentType: "application/json",
+        data: JSON.stringify({ username: selectedUsername, products: selectedProducts }),
+        success: function (response) {
+            alert('Order sent successfully!');
+            // Optionally, clear selectedProducts array or reset UI
+             // Redirect to /list after order is successfully saved
+            window.location.href = '/orders/list';
+            selectedProducts = [];
+            saveChanges(); // Update UI after order is sent
+        },
+        error: function (xhr, status, error) {
+            console.error('Failed to send order:', error);
+            alert('Failed to send order. Please try again later.');
+        }
+    });
+
+
+    }
+</script>
+
+</body>
+</html>
